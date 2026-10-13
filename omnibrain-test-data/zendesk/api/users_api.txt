@@ -1,0 +1,20 @@
+TITLE: Users API
+SOURCE: https://developer.zendesk.com/api-reference/ticketing/users/users/
+SOURCE: Official Zendesk Developer Docs
+
+Zendesk has three user roles: end users, agents, and administrators.
+
+End users request support through tickets and can use Help Center to view knowledge-base articles and community content, access ticket history, and submit tickets.
+
+Agents solve tickets and can belong to multiple groups. Administrators have agent abilities plus administrative abilities. Enterprise and higher plans can configure custom roles.
+
+Example endpoints include:
+GET /api/v2/users/{user_id}
+GET /api/v2/users/me
+POST /api/v2/users
+POST /api/v2/users/create_many
+POST /api/v2/users/create_or_update
+PUT /api/v2/users/{user_id}
+DELETE /api/v2/users/{user_id}
+
+Users can be suspended, and deleted users are not recoverable.

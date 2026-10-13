@@ -1,0 +1,13 @@
+TITLE: Security and authentication
+SOURCE: https://developer.zendesk.com/api-reference/introduction/security-and-auth/
+SOURCE: Official Zendesk Developer Docs
+
+A verified user is required to make API requests. Zendesk supports OAuth access tokens for authentication.
+
+Zendesk recommends migration from basic authentication or API tokens to OAuth access tokens for improved security and compatibility with future requirements.
+
+Apps, integrations, or bots distributed to multiple Zendesk customers must use global OAuth tokens.
+
+Zendesk Developer Terms prohibit sharing API credentials with third parties.
+
+Client-side CORS requests are supported when authenticated with an OAuth access token, but not when using a Zendesk API token.

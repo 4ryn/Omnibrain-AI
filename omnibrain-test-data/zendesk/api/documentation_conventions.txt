@@ -1,0 +1,19 @@
+TITLE: Documentation conventions
+SOURCE: https://developer.zendesk.com/api-reference/introduction/doc-conventions/
+SOURCE: Official Zendesk Developer Docs
+
+Zendesk API endpoints are described with an HTTP method and a path.
+
+Example:
+GET /api/v2/help_center{/locale}/articles
+
+The optional .json suffix can be appended to a resource name without changing how the endpoint works.
+
+Zendesk recommends including Content-Type: application/json for PUT, POST, and DELETE requests when .json is omitted.
+
+A complete endpoint is formed by prepending the Zendesk Support URL to the path.
+
+Example:
+https://example.zendesk.com/api/v2/help_center/en-us/articles.json
+
+Placeholder values in commands and samples must be replaced with the appropriate value.

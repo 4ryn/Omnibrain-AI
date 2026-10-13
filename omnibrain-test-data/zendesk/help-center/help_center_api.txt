@@ -1,0 +1,13 @@
+TITLE: Help Center API
+SOURCE: https://developer.zendesk.com/api-reference/help_center/help-center-api/introduction/
+SOURCE: Official Zendesk Developer Docs
+
+The Help Center API is the reference documentation for the Zendesk Help Center REST API and Help Center Templating API.
+
+Responses are filtered according to the permissions of the user making the request. The API works with Help Center items and provides access to article comments.
+
+For multiple brands, brand-specific subdomains are used in API requests.
+
+The Help Center API supports cursor and offset pagination. Cursor pagination is preferred and is available for most endpoints. Offset pagination is available for backward compatibility and is limited to 100 pages.
+
+The Help Center API follows the Support API's requests-per-minute rate limits.

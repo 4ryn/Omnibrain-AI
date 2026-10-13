@@ -1,0 +1,15 @@
+TITLE: About automations and how they work
+SOURCE: https://support.zendesk.com/hc/en-us/articles/4408832701850-About-automations-and-how-they-work
+SOURCE: Official Zendesk Help
+
+Automations manage tickets by executing actions based on time events. They run hourly on non-closed tickets when conditions are met.
+
+Automations are similar to triggers because both use conditions and actions. They differ because automations act when a time-based event occurs after a ticket property was set or updated, rather than immediately after a ticket is created or updated.
+
+Important facts include:
+- Automations run every hour, but not necessarily at the top of the hour.
+- An automation can fire on a maximum of 1,000 tickets per hour.
+- Automations do not run on closed tickets.
+- Each ticket can be updated a maximum of 100 times by automations.
+- An automation must include a condition that is true only once or an action that nullifies at least one condition.
+- Up to 500 active automations can exist.

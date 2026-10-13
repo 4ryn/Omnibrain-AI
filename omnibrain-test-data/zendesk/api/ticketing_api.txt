@@ -1,0 +1,9 @@
+TITLE: Ticketing API
+SOURCE: https://developer.zendesk.com/api-reference/ticketing/introduction/
+SOURCE: Official Zendesk Developer Docs
+
+The Ticketing API is the Zendesk Support API. It can be used with tickets, users, organizations, custom objects, and ticket workflows.
+
+General mechanisms such as pagination and authentication are described in the Zendesk API introduction and apply to this API.
+
+Zendesk also provides an API quick start, Ticketing API articles and tutorials, an API community, and Postman support for exploring endpoints.

@@ -1,0 +1,62 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: omnibrain
+      POSTGRES_PASSWORD: omnibrain
+      POSTGRES_DB: omnibrain
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U omnibrain"]
+      interval: 5s
+      retries: 10
+    ports: ["5432:5432"]
+
+  redis:
+    image: redis:7-alpine
+    # ports: ["6379:6379"]
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    volumes: [qdrantdata:/qdrant/storage]
+    ports: ["6333:6333"]
+
+  backend:
+    build: ./backend
+    env_file: .env
+    command: sh -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000 "
+    volumes:
+      - ./backend:/app
+      - ./widget:/widget:ro
+      - uploads:/data/uploads
+    depends_on:
+      postgres: {condition: service_healthy}
+      redis: {condition: service_started}
+    ports: ["8000:8000"]
+
+  worker:
+    build: ./backend
+    env_file: .env
+    command: celery -A app.workers.celery_app.celery_app worker --loglevel=INFO --concurrency=2
+    volumes:
+      - ./backend:/app
+      - uploads:/data/uploads
+    depends_on:
+      postgres: {condition: service_healthy}
+      redis: {condition: service_started}
+
+  frontend:
+    build: ./frontend
+    environment:
+      BACKEND_INTERNAL_URL: http://backend:8000
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    depends_on: [backend]
+    ports: ["3000:3000"]
+
+volumes:
+  pgdata:
+  qdrantdata:
+  uploads:

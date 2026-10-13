@@ -1,0 +1,13 @@
+TITLE: Product documentation for Support
+SOURCE: https://support.zendesk.com/hc/en-us/articles/9196895052442-Product-documentation-for-Support
+SOURCE: Official Zendesk Help
+
+The comprehensive Support documentation covers Zendesk basics, Agent Workspace, security and data protection, ticket management, ticket customization, ticket automation and collaboration, measuring success, and multiple language support.
+
+Ticket channels include email, voice, messaging, live chat, and Web Widget.
+
+AI and automation topics include AI agents, Copilot, omnichannel routing, objects and rules.
+
+Account and user topics include account management, managing people, workforce management and QA, user access, and user sign-in.
+
+Self-service and knowledge, apps and integrations, developer documentation, and analytics through Explore are also covered.

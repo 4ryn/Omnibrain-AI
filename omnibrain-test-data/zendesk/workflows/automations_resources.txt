@@ -1,0 +1,10 @@
+TITLE: Automations resources and recipes
+SOURCE: https://support.zendesk.com/hc/en-us/articles/4408882001690-Automations-resources-and-recipes
+SOURCE: Official Zendesk Help
+
+This article provides a reference list of automation documentation and recipes, including:
+- About automations and how they work
+- Automation conditions and actions reference
+- Streamlining workflow with time-based events and automations
+- Support default automations
+- Business rules for automated reminders to customers

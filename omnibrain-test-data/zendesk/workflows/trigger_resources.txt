@@ -1,0 +1,15 @@
+TITLE: Trigger resources
+SOURCE: https://support.zendesk.com/hc/en-us/articles/4408843730458-Trigger-resources
+SOURCE: Official Zendesk Help
+
+Zendesk provides resources covering different trigger types and where they are created and managed.
+
+Resources include:
+- About Zendesk triggers and how they work
+- Opening and viewing trigger lists
+- Standard ticket triggers
+- Creating triggers for ticket updates and notifications
+- Trigger conditions and actions reference
+- Creating categories to organize triggers
+- Managing triggers
+- Searching triggers

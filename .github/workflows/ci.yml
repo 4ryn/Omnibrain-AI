@@ -1,0 +1,37 @@
+# Written alongside the code but NOT executed in the environment it was authored in. Review before relying on it.
+name: ci
+on: [push, pull_request]
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    strategy: { matrix: { db: [sqlite, postgres] } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip }
+      - run: pip install -r backend/requirements-dev.txt
+      - run: cd backend && TEST_DB=${{ matrix.db }} pytest -q -W ignore
+      - if: matrix.db == 'postgres'
+        run: |
+          cd backend
+          export DATABASE_URL=$(python - <<'PY'
+          import pgserver, tempfile
+          s = pgserver.get_server(tempfile.mkdtemp()); sock = s.get_uri().split("host=")[1]
+          s.psql("CREATE DATABASE ci;"); print(f"postgresql+asyncpg://postgres@/ci?host={sock}")
+          PY
+          )
+          alembic upgrade head && alembic check
+  widget:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: cd widget && npm install && npm test
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: cd frontend && npm install && npx tsc --noEmit && npm run build

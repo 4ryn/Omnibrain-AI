@@ -1,0 +1,15 @@
+TITLE: Organizations API
+SOURCE: https://developer.zendesk.com/api-reference/ticketing/organizations/organizations/
+SOURCE: Official Zendesk Developer Docs
+
+Organizations segment Zendesk Support customers (end users). Customers can be manually assigned to an organization or automatically assigned based on their email domain.
+
+Organizations can be used in business rules to route tickets to agent groups or send email notifications.
+
+Organization objects include created_at, details, domain_names, and external_id.
+
+Creating an organization requires a unique name.
+
+Example endpoints:
+POST /api/v2/organizations
+POST /api/v2/organizations/create_or_update

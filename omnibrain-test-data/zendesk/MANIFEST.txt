@@ -1,0 +1,9 @@
+OmniBrain Zendesk RAG Test Corpus
+=================================
+Company: Zendesk
+Source: Official Zendesk Help and Developer Documentation
+Format: UTF-8 plain text
+Purpose: Testing document ingestion, chunking, embeddings, Qdrant retrieval, and RAG.
+
+This corpus contains source-derived extracts, not fabricated company documents.
+Each file includes its official source URL.

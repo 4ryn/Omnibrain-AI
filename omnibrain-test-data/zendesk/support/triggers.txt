@@ -1,0 +1,9 @@
+TITLE: About Zendesk triggers and how they work
+SOURCE: https://support.zendesk.com/hc/en-us/articles/4408822236058-About-Zendesk-triggers-and-how-they-work
+SOURCE: Official Zendesk Help
+
+Triggers fire only when their configured conditions are met. Triggers contain two parts: conditions and actions. They can be understood as “if” and “then” statements: if a record contains a specified set of conditions, the actions update the record and can send notifications.
+
+Condition statements are the “if” part of a trigger and are structured as a condition/category, an operator, and a value. Available condition options vary by trigger type.
+
+Triggers, like other business rules, must be smaller than 65 KB.

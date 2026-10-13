@@ -1,0 +1,9 @@
+TITLE: Zendesk API Introduction
+SOURCE: https://developer.zendesk.com/api-reference/introduction/introduction/
+SOURCE: Official Zendesk Developer Docs
+
+The Zendesk API reference covers shared features for Ticketing, Help Center, and Voice. Additional introductory information exists for Live Chat, Sales CRM, Custom Data, and Conversations (Messaging).
+
+Additional resources include developer tutorials and articles, the Zendesk APIs community, and the Zendesk Platform Developers workspace.
+
+Access to or use of Zendesk APIs is subject to Zendesk Developer Terms and the Change Policy.
