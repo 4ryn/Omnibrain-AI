@@ -19,7 +19,7 @@ cd backend && pip install -r requirements-dev.txt
 pytest                          # fast: SQLite + fakes + embedded Qdrant
 TEST_DB=postgres pytest         # real PostgreSQL 16 + pgvector, schema built by the Alembic migration
 cd ../widget && npm install && npm test        # jsdom: loader + chat UI
-cd ../frontend && npm install && npx tsc --noEmit && npm run build
+cd ../frontend && npm install && npm test && npx tsc --noEmit && npm run build
 ```
 
 ## Production checklist
@@ -27,7 +27,7 @@ cd ../frontend && npm install && npx tsc --noEmit && npm run build
 - [ ] `BACKEND_URL` = public API URL (goes into customer snippets); `FRONTEND_URL`, `GOOGLE_REDIRECT_URI` match your domains
 - [ ] Set `METRICS_TOKEN` and scrape `/metrics`; point the orchestrator at `/health` (liveness) and `/health/ready` (readiness)
 - [ ] `TRUSTED_PROXIES` = number of proxies in front of the API (otherwise rate limits key on the proxy's IP)
-- [ ] Customers must add their domains under Widget → Allowed websites (empty = blocked in production)
+- [ ] Customers must add their domains under Widget → Allowed websites (empty = blocked in production); the site's CSP must permit the public API origin in `script-src` and `frame-src`
 - [ ] Tune `services/plans.py`; set `MODEL_PRICING_JSON` if you want cost estimates
 - [ ] Back up PostgreSQL (all business data + pgvector); Qdrant/Pinecone can be rebuilt by re-indexing
 - [ ] Add a job to purge expired `auth_sessions`; run ≥2 Celery workers; set Redis persistence as needed
@@ -48,7 +48,10 @@ Suggested alerts: provider error ratio, `chat_messages_total{outcome="error"}` r
 |---|---|
 | Visitors see "temporarily unavailable" | `outcome="misconfigured"` (missing key/model in AI Configuration), `provider_errors_total`, `dependency_errors_total{dependency="retrieval"}`; logs by request ID |
 | Document stuck "failed" | the error text on the Documents page; worker logs; re-index after fixing |
-| Widget blank on a customer site | Widget → Allowed websites includes that exact origin (scheme+host+port); browser console CSP `frame-ancestors` message |
+| Loader does not appear on a customer site | Use the exact dashboard-generated snippet; in the customer page's Network panel, confirm the server-provided `/widget.js` URL returns JavaScript. For Next.js App Router, install it with `next/script` inside the root layout's `<body>`; check the site's `script-src` policy. |
+| Widget iframe is blocked | Inspect `/widget/frame`: HTTP 403 means the page origin was rejected, so compare its exact scheme, hostname, and port with Widget → Allowed websites. Inspect the response's CSP `frame-ancestors` and check `/widget/assets/frame.js` and `frame.css`; the host site's `frame-src` must allow the public API origin. |
+| Loader reports no ready signal | The loader ran, but the cross-origin frame did not send its readiness message within 15 seconds. The parent cannot reliably determine whether HTTP, origin, or CSP caused the failure; use the customer browser's Network and Console panels. |
+| Next.js hydration warning only outside Incognito | Compare with a clean browser profile with extensions disabled. Extension-injected DOM can trigger host-page hydration warnings; this is separate from a verified loader or iframe request. |
 | Unexpected 429s | `rate_limited_total{scope}`; plan quota on Usage page |
 | Retrieval returns nothing for good content | `RAG_MIN_SCORE`/`RAG_STRONG_SCORE` vs your embedding model; Knowledge → Search shows raw similarity |
 

@@ -47,7 +47,7 @@ graceful handling of LLM / embedding / vector-store / queue failures, real Alemb
 | **30-step acceptance flow** (sign-in → upload/URL → index → configure → playground → snippet → widget → stream → fallback → lead → dashboards → usage → no keys exposed → tenant isolation) | ✅ passes on in-memory, embedded Qdrant **and pgvector** stores |
 | Concurrent multi-tenant load (30 simultaneous chats, 3 tenants) | ✅ no context mixing, usage attributed correctly |
 | Real Google OAuth *code path* (callback, state, nonce, issuer, verified email, logout) | ✅ with Google's two network calls faked |
-| Widget loader + chat UI in jsdom (22 tests: streaming, XSS, mobile, lead form, errors) | ✅ |
+| Widget loader + chat UI in jsdom (23 tests: streaming, XSS, mobile, lead form, errors, readiness diagnostics) | ✅ |
 | Dashboard `tsc` + production `next build`; built dashboard proxying to a live API (cookies, CSRF, frame CSP) | ✅ |
 | Real `uvicorn` smoke (readiness, metrics gate, headers, body limits, SSE) | ✅ (found and fixed 2 bugs) |
 | **Not verified** | Real Google sign-in · real OpenAI/Grok/Anthropic/embedding/voice calls · Pinecone live (fake client tested) · Qdrant *server* (embedded tested) · Redis + Celery workers running together · dashboard/widget in a real browser (jsdom only) · load/soak testing · third-party security review · `.github/workflows/ci.yml` |
@@ -58,7 +58,7 @@ cd backend && pip install -r requirements-dev.txt
 pytest                      # fast
 TEST_DB=postgres pytest     # real Postgres + pgvector (embedded via pgserver)
 cd ../widget && npm install && npm test
-cd ../frontend && npm install && npx tsc --noEmit && npm run build
+cd ../frontend && npm install && npm test && npx tsc --noEmit && npm run build
 ```
 
 ## Honest limitations

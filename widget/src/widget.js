@@ -639,8 +639,10 @@
     var readyTimeout = window.setTimeout(function () {
       if (!readyReceived) {
         console.error(
-          "[OmniBrain] Widget did not become ready. Check the frame URL, " +
-          "allowed origins, backend logs, and browser console."
+          "[OmniBrain] The loader ran, but the widget iframe did not send a ready signal within 15 seconds. " +
+          "Check the /widget/frame and /widget/assets/frame.js requests, the site's script-src/frame-src " +
+          "policies, the saved Allowed websites origin, and the frame-ancestors response header. " +
+          "The browser console and Network panel can distinguish failures that the cross-origin parent cannot."
         );
       }
     }, 15000);

@@ -35,7 +35,11 @@ def _login_error(code: str) -> RedirectResponse:
 
 
 @router.get("/google/login")
-async def google_login(request: Request) -> RedirectResponse:
+async def google_login(
+    request: Request,
+    plan: str | None = None,
+    billing: str | None = None,
+) -> RedirectResponse:
     await enforce(f"auth:{client_ip(request)}", 20)
     if not (settings.google_client_id and settings.google_client_secret):
         return _login_error("oauth_not_configured")
@@ -47,7 +51,12 @@ async def google_login(request: Request) -> RedirectResponse:
         "state": state, "nonce": nonce, "access_type": "online", "prompt": "select_account",
     }
     resp = RedirectResponse(f"{GOOGLE_AUTH_URL}?{urlencode(params)}", status_code=302)
-    resp.set_cookie(OAUTH_COOKIE, sign_oauth_payload(state, nonce), max_age=OAUTH_MAX_AGE,
+    if plan not in {"starter", "business", "pro"} or billing not in {"monthly", "annual"}:
+        plan = None
+        billing = None
+
+    oauth_payload = sign_oauth_payload(state, nonce, plan, billing)
+    resp.set_cookie(OAUTH_COOKIE, oauth_payload, max_age=OAUTH_MAX_AGE,
                     httponly=True, secure=settings.cookie_secure, samesite="lax", path="/api/auth")
     return resp
 
@@ -89,7 +98,21 @@ async def google_callback(request: Request, code: str | None = None, state: str 
         db, user.id, request.headers.get("user-agent"), request.client.host if request.client else None)
 
     max_age = settings.session_ttl_hours * 3600
-    resp = RedirectResponse(f"{settings.frontend_url}/dashboard", status_code=302)
+    redirect_url = f"{settings.frontend_url}/dashboard"
+
+    selected_plan = payload.get("plan")
+    selected_billing = payload.get("billing")
+
+    if (
+        selected_plan in {"starter", "business", "pro"}
+        and selected_billing in {"monthly", "annual"}
+    ):
+        redirect_url += "?" + urlencode({
+            "plan": selected_plan,
+            "billing": selected_billing,
+        })
+
+    resp = RedirectResponse(redirect_url, status_code=302)
     resp.set_cookie(SESSION_COOKIE, token, max_age=max_age, httponly=True,
                     secure=settings.cookie_secure, samesite="lax", path="/")
     resp.set_cookie(CSRF_COOKIE, csrf_for(token), max_age=max_age, httponly=False,

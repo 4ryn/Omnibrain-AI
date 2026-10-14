@@ -25,9 +25,19 @@ def hash_token(token: str) -> str:
 def csrf_for(session_token: str) -> str:
     return hmac.new(settings.secret_key.encode(), session_token.encode(), hashlib.sha256).hexdigest()
 
+def sign_oauth_payload(
+    state: str,
+    nonce: str,
+    plan: str | None = None,
+    billing: str | None = None,
+) -> str:
+    payload = {"state": state, "nonce": nonce}
 
-def sign_oauth_payload(state: str, nonce: str) -> str:
-    return _oauth_signer.dumps({"state": state, "nonce": nonce})
+    if plan in {"starter", "business", "pro"} and billing in {"monthly", "annual"}:
+        payload["plan"] = plan
+        payload["billing"] = billing
+
+    return _oauth_signer.dumps(payload)
 
 
 def read_oauth_payload(value: str) -> dict | None:

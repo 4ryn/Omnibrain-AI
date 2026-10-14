@@ -2,6 +2,7 @@ import json
 
 from sqlalchemy import select
 
+from app.core.config import settings
 from app.models import Lead, UnansweredQuestion, WidgetConfiguration
 from app.security import widget_auth
 from tests.conftest import make_tenant, seed_knowledge
@@ -20,7 +21,11 @@ async def test_widget_config_roundtrip_validation_and_snippet(client, env):
     await set_plan(env.sm, a["ws_id"], "business")      # voice is a paid-plan feature
     h = a["headers"]
     got = (await client.get("/api/widget-config", headers=h)).json()
-    assert got["public_id"] == a["public_id"] and a["public_id"] in got["snippet"] and 'async src="' in got["snippet"]
+    assert got["public_id"] == a["public_id"]
+    assert got["snippet"] == (
+        f'<script async src="{settings.backend_url.rstrip("/")}/widget.js" '
+        f'data-workspace="{a["public_id"]}"></script>'
+    )
     assert got["warnings"]
     r = await client.put("/api/widget-config", headers=h, json={
         "brand_name": "Acme", "primary_color": "#112233", "theme": "dark", "position": "bottom-left",

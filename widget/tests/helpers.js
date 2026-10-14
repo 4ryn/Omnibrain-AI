@@ -12,15 +12,23 @@ async function until(fn, timeout = 1500) {
 }
 
 /** Loader running on a fake customer page (https://customer.example.com). */
-function loaderPage({ attrs = 'data-workspace="wk_abc123"', width = 1280, height = 800, preExisting = false } = {}) {
+function loaderPage({ attrs = 'data-workspace="wk_abc123"', width = 1280, height = 800, preExisting = false, captureReadyTimeout = false } = {}) {
   const dom = new JSDOM(`<!doctype html><body><p>customer site</p>
     <script async src="https://api.omnibrain.test/widget.js" ${attrs}></script></body>`,
     { url: "https://customer.example.com/pricing?x=1", runScripts: "outside-only", pretendToBeVisual: true });
   const w = dom.window;
   w.innerWidth = width; w.innerHeight = height;
   if (preExisting) w.__omnibrainLoaded = true;
+  let readyTimeout;
+  if (captureReadyTimeout) {
+    const realSetTimeout = w.setTimeout.bind(w);
+    w.setTimeout = function (callback, delay) {
+      if (delay === 15000) { readyTimeout = callback; return 0; }
+      return realSetTimeout.apply(w, arguments);
+    };
+  }
   w.eval(read("widget.js"));
-  return { dom, w, frame: () => w.document.querySelector("iframe") };
+  return { dom, w, frame: () => w.document.querySelector("iframe"), triggerReadyTimeout: () => readyTimeout?.() };
 }
 
 /** Chat UI (frame.js) with a scripted fetch(). */

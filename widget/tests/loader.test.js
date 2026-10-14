@@ -141,6 +141,19 @@ test("messages from other windows or with a bad shape are ignored", () => {
   assert.equal(f.style.height, "112px");
 });
 
+test("readiness timeout reports actionable browser checks without claiming a specific failure", () => {
+  const { w, triggerReadyTimeout } = loaderPage({ captureReadyTimeout: true });
+  const errors = [];
+  w.console.error = (...args) => errors.push(args);
+
+  triggerReadyTimeout();
+
+  assert.equal(errors.length, 1);
+  assert.match(errors[0][0], /did not send a ready signal within 15 seconds/);
+  assert.match(errors[0][0], /script-src\/frame-src/);
+  assert.match(errors[0][0], /frame-ancestors/);
+});
+
 test("resizing the window re-lays-out an open widget", async () => {
   const { w, frame } = loaderPage({
     width: 1280,
