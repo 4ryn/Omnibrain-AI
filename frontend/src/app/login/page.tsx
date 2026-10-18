@@ -77,10 +77,15 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
   const billing: Billing = params.billing === "annual" ? "annual" : "monthly";
 
-  const loginUrl =
-    plan
-      ? `/api/auth/google/login?plan=${plan}&billing=${billing}`
-      : "/api/auth/google/login";
+  
+  const backendUrl = "https://omnibrain-ai.onrender.com";
+
+  const loginUrl = plan
+    ? `${backendUrl}/api/auth/google/login?plan=${encodeURIComponent(plan)}&billing=${encodeURIComponent(billing ?? "")}`
+    : `${backendUrl}/api/auth/google/login`;
+
+  window.location.href = loginUrl;
+
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-slate-950 p-6 text-white">
