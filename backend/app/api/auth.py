@@ -28,10 +28,21 @@ GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth"
 GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token"
 
 
+
 def _login_error(code: str) -> RedirectResponse:
-    resp = RedirectResponse(f"{settings.frontend_url}/login?error={code}", status_code=302)
-    resp.delete_cookie(OAUTH_COOKIE)
+    resp = RedirectResponse(
+        f"{settings.frontend_url}/login?error={code}",
+        status_code=302,
+    )
+    resp.delete_cookie(
+        OAUTH_COOKIE,
+        path="/api/auth",
+        secure=settings.cookie_secure,
+        httponly=True,
+        samesite="lax",
+    )
     return resp
+
 
 
 @router.get("/google/login")

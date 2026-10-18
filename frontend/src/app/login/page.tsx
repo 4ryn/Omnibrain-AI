@@ -76,9 +76,15 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
     : null;
 
   const billing: Billing = params.billing === "annual" ? "annual" : "monthly";
-  const loginUrl = plan
-    ? `/api/auth/google/login?plan=${encodeURIComponent(plan)}&billing=${encodeURIComponent(billing)}`
-    : "/api/auth/google/login";
+  
+  const BACKEND_URL = "https://omnibrain-ai.onrender.com";
+
+  const loginUrl = new URL("/api/auth/google/login", BACKEND_URL);
+
+  if (plan) {
+    loginUrl.searchParams.set("plan", plan);
+    loginUrl.searchParams.set("billing", billing);
+  }
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-slate-950 p-6 text-white">
@@ -121,9 +127,14 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           </div>
         )}
 
-        <a href={loginUrl} className="mt-7 inline-flex w-full items-center justify-center rounded-xl bg-white px-4 py-3 text-sm font-semibold text-slate-950">
+        
+        <a
+          href={loginUrl.toString()}
+          className="mt-7 inline-flex w-full items-center justify-center rounded-xl bg-white px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-slate-200"
+        >
           Continue with Google
         </a>
+
 
         <p className="mt-5 text-xs text-slate-500">
           You can explore your dashboard before subscribing. Choosing a plan
