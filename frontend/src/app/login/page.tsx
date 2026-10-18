@@ -77,14 +77,14 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
   const billing: Billing = params.billing === "annual" ? "annual" : "monthly";
   
-  const BACKEND_URL = "https://omnibrain-ai.onrender.com";
+  // const BACKEND_URL = "https://omnibrain-ai.onrender.com";
 
-  const loginUrl = new URL("/api/auth/google/login", BACKEND_URL);
+  const loginUrl = "/api/auth/google/login";
 
-  if (plan) {
-    loginUrl.searchParams.set("plan", plan);
-    loginUrl.searchParams.set("billing", billing);
-  }
+  // if (plan) {
+  //   loginUrl.searchParams.set("plan", plan);
+  //   loginUrl.searchParams.set("billing", billing);
+  // }
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-slate-950 p-6 text-white">
@@ -128,12 +128,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
         )}
 
         
-        <a
-          href={loginUrl.toString()}
-          className="mt-7 inline-flex w-full items-center justify-center rounded-xl bg-white px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-slate-200"
-        >
-          Continue with Google
-        </a>
+        <a href={loginUrl}>Continue with Google</a>
 
 
         <p className="mt-5 text-xs text-slate-500">
