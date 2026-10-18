@@ -67,10 +67,23 @@ async def google_callback(request: Request, code: str | None = None, state: str 
     await enforce(f"auth:{client_ip(request)}", 20)
     if error or not code or not state:
         return _login_error("oauth_denied")
-    payload = read_oauth_payload(request.cookies.get(OAUTH_COOKIE, ""))
-    if not payload or not secrets.compare_digest(payload["state"], state):
+    # payload = read_oauth_payload(request.cookies.get(OAUTH_COOKIE, ""))
+    # if not payload or not secrets.compare_digest(payload["state"], state):
+    #     return _login_error("invalid_state")
+    raw_cookie = request.cookies.get(OAUTH_COOKIE)
+    payload = read_oauth_payload(raw_cookie or "")
+
+    if not payload:
+        log.warning(
+            "Google OAuth state validation failed: cookie_missing_or_invalid"
+        )
         return _login_error("invalid_state")
 
+    if not secrets.compare_digest(payload["state"], state):
+        log.warning(
+            "Google OAuth state validation failed: state_mismatch"
+        )
+        return _login_error("invalid_state")
     try:
         async with httpx.AsyncClient(timeout=10) as client:
             r = await client.post(GOOGLE_TOKEN_URL, data={
