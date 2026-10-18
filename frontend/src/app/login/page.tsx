@@ -128,7 +128,12 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
         )}
 
         
-        <a href={loginUrl}>Continue with Google</a>
+        <a
+          href={loginUrl}
+          className="mt-7 inline-flex w-full items-center justify-center rounded-xl bg-white px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-slate-200"
+        >
+          Continue with Google
+        </a>
 
 
         <p className="mt-5 text-xs text-slate-500">
