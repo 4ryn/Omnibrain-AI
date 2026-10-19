@@ -84,9 +84,21 @@ async def google_callback(request: Request, code: str | None = None, state: str 
     raw_cookie = request.cookies.get(OAUTH_COOKIE)
     payload = read_oauth_payload(raw_cookie or "")
 
+    if not raw_cookie:
+        log.warning(
+            "Google OAuth state validation failed: cookie_missing "
+            "host=%s path=%s",
+            request.url.hostname,
+            request.url.path,
+        )
+        return _login_error("invalid_state")
+
     if not payload:
         log.warning(
-            "Google OAuth state validation failed: cookie_missing_or_invalid"
+            "Google OAuth state validation failed: cookie_invalid_or_expired "
+            "host=%s path=%s",
+            request.url.hostname,
+            request.url.path,
         )
         return _login_error("invalid_state")
 
