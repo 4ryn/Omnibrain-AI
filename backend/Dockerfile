@@ -16,4 +16,4 @@ ENV WIDGET_DIR=/widget/src
 
 RUN mkdir -p /data/uploads
 
-CMD ["sh", "-c", "alembic upgrade head && exec uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-10000}"]
+CMD ["sh", "-c", "alembic upgrade head || exit 1; celery -A app.workers.celery_app:celery_app worker --pool=solo --loglevel=INFO & exec uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-10000}"]
