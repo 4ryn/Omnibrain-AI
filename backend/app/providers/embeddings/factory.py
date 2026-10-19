@@ -7,6 +7,15 @@ from app.providers.embeddings.base import EmbeddingProvider
 
 def build_embedder() -> EmbeddingProvider:
     name = settings.embedding_provider.lower()
+    
+    if name == "gemini":
+        from app.providers.embeddings.gemini_embeddings import GeminiEmbeddings
+        return GeminiEmbeddings(
+            settings.gemini_api_key,
+            settings.embedding_model,
+            settings.embedding_dimensions,
+        )
+
     if name == "openai":
         from app.providers.embeddings.openai_embeddings import OpenAIEmbeddings
         return OpenAIEmbeddings(settings.openai_api_key, settings.embedding_model, settings.embedding_dimensions)

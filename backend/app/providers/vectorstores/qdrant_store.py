@@ -3,7 +3,7 @@ from qdrant_client import models as qm
 
 from app.providers.vectorstores.base import VectorHit, VectorRecord, VectorStore
 
-COLLECTION = "omnibrain_chunks"
+COLLECTION = "omnibrain_chunks_gemini"
 
 
 def _filter(workspace_id: str, filters: dict | None = None, ids: list[str] | None = None) -> qm.Filter:
