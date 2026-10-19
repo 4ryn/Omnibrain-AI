@@ -115,6 +115,13 @@
   var recognition = null;
   var listening = false;
   var leadDone = false;
+  var leadFormOpen = false;
+
+  function wantsContactCapture(text) {
+    var value = String(text || "").replace(/\s+/g, " ").trim();
+
+    return /\b(leave|share|provide|submit|give|enter|send)\b.{0,45}\b(contact details|contact information|email|phone number|phone|callback|call back|details)\b|\b(contact me|call me back|request a callback|speak to someone|talk to someone|human support|sales team)\b/i.test(value);
+  }
 
   /* ------------------------------------------------------------------ */
   /* Theme / branding                                                   */
@@ -1071,7 +1078,10 @@
         reply.text.innerHTML =
           renderAssistantMarkdown(full);
       }
-      if (isFallback && boot.lead_capture_enabled) {
+      if (
+        boot.lead_capture_enabled &&
+        (isFallback || wantsContactCapture(text))
+      ) {
         leadForm(text);
       }
 
@@ -1139,7 +1149,8 @@
   /* ------------------------------------------------------------------ */
 
   function leadForm(question) {
-    if (leadDone) return;
+    if (leadDone || leadFormOpen || !boot.lead_capture_enabled) return;
+    leadFormOpen = true;
     leadDone = true;
 
     var card = $("div", "msg bot lead");
@@ -1183,9 +1194,9 @@
 
     no.addEventListener("click", function () {
       card.remove();
+      leadFormOpen = false;
     });
-
-    form.addEventListener("submit", async function (event) {
+        form.addEventListener("submit", async function (event) {
       event.preventDefault();
 
       message.textContent = "";
@@ -1218,6 +1229,8 @@
         }
 
         if (!response.ok) throw new Error();
+        leadDone = true;
+        leadFormOpen = false;
 
         card.textContent = "Thanks! The team will get back to you soon.";
       } catch (error) {
